@@ -1,17 +1,62 @@
 import { Box, Button, Card, Typography } from '@mui/material';
 import React from 'react';
-import { CardListProps } from './types';
+import { LocalGeocodingType } from './types';
 import { useStyles } from './CardList.style';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Service from '../../API/Service';
+import { removeCityState, upgradeCityState } from '../../store/citySlice';
+import { RootStateType } from '../../store/types';
 
-export default function CardList(props: CardListProps) {
-  const { list, removeCity, upgradeCity } = props;
+export default function CardList() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const list = useSelector(
+    (state: RootStateType) => state.city.cityWeatherList,
+  );
+  const dispatch = useDispatch();
 
   if (!list.length) {
     return null;
   }
+
+  const upgradeCity = async (lat: number, lon: number, id: number) => {
+    const responseWeather = await Service.getWeather(lat, lon);
+
+    const { name, weather, main } = responseWeather;
+
+    const index = list.findIndex((it) => it.id === id);
+
+    dispatch(
+      upgradeCityState({
+        index,
+        cityWeather: {
+          id,
+          name,
+          weather: weather[0].main,
+          temp: Math.round(main.temp - 273),
+          lat,
+          lon,
+        },
+      }),
+    );
+  };
+
+  const removeCity = (id: number) => {
+    const localGeocodingList = localStorage.getItem('city');
+    if (localGeocodingList) {
+      const geocodingList = JSON.parse(
+        localGeocodingList,
+      ) as LocalGeocodingType[];
+
+      localStorage.setItem(
+        'city',
+        JSON.stringify(geocodingList.filter((it) => it.id !== id)),
+      );
+    }
+
+    dispatch(removeCityState(id));
+  };
 
   return (
     <Box className={classes.wrapper}>
@@ -37,7 +82,6 @@ export default function CardList(props: CardListProps) {
                 variant="contained"
                 onClick={(e) => {
                   e.stopPropagation();
-
                   upgradeCity(it.lat, it.lon, it.id);
                 }}
               >
@@ -49,7 +93,6 @@ export default function CardList(props: CardListProps) {
                 variant="contained"
                 onClick={(e) => {
                   e.stopPropagation();
-
                   removeCity(it.id);
                 }}
               >

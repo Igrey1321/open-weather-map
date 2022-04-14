@@ -2,16 +2,16 @@ import { Box, Button, FormHelperText } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useStyles } from './index.style';
 import CardList from './CardList';
-import { cityWeatherState, LocalGeocodingType } from './types';
+import { LocalGeocodingType } from './types';
 import Service from '../../API/Service';
 import UseFetch from '../../hooks/useFetch';
+import { useDispatch } from 'react-redux';
+import { addCityState } from '../../store/citySlice';
 
 export default function HomeScreen() {
   const [city, setCity] = useState('');
   const [error, setError] = useState('');
-  const [cityWeatherList, setCityWeatherList] = useState<
-    cityWeatherState[] | []
-  >([]);
+  const dispatch = useDispatch();
   const classes = useStyles();
 
   const [fetching] = UseFetch(async () => {
@@ -19,8 +19,6 @@ export default function HomeScreen() {
 
     if (localGeocoding) {
       const geocodingList = JSON.parse(localGeocoding) as LocalGeocodingType[];
-
-      const accumulator = [];
 
       for (const it of geocodingList) {
         const responseWeather = await Service.getWeather(it.lat, it.lon);
@@ -33,17 +31,17 @@ export default function HomeScreen() {
           coord: { lat, lon },
         } = responseWeather;
 
-        accumulator.push({
-          id,
-          name,
-          weather: weather[0].main,
-          temp: Math.round(temp - 273),
-          lat,
-          lon,
-        });
+        dispatch(
+          addCityState({
+            id,
+            name,
+            weather: weather[0].main,
+            temp: Math.round(temp - 273),
+            lat,
+            lon,
+          }),
+        );
       }
-
-      setCityWeatherList(accumulator);
     }
   });
 
@@ -100,60 +98,22 @@ export default function HomeScreen() {
           coord: { lat, lon },
         } = cityData;
 
-        setCityWeatherList([
-          ...cityWeatherList,
-          {
+        dispatch(
+          addCityState({
             id,
             name,
             weather: weather[0].main,
             temp: Math.round(main.temp - 273),
             lat,
             lon,
-          },
-        ]);
+          }),
+        );
       } else {
         setError('No city');
       }
     } else {
       setError('Empty field');
     }
-  };
-
-  const removeCity = (id: number) => {
-    const localGeocodingList = localStorage.getItem('city');
-    if (localGeocodingList) {
-      const geocodingList = JSON.parse(
-        localGeocodingList,
-      ) as LocalGeocodingType[];
-
-      localStorage.setItem(
-        'city',
-        JSON.stringify(geocodingList.filter((it) => it.id !== id)),
-      );
-    }
-
-    setCityWeatherList(cityWeatherList.filter((it) => it.id !== id));
-  };
-
-  const upgradeCity = async (lat: number, lon: number, id: number) => {
-    const responseWeather = await Service.getWeather(lat, lon);
-
-    const { name, weather, main } = responseWeather;
-
-    const indexCity = cityWeatherList.findIndex((it) => it.id === id);
-
-    const newCityWeatherList = cityWeatherList;
-
-    newCityWeatherList[indexCity] = {
-      id,
-      name,
-      weather: weather[0].main,
-      temp: Math.round(main.temp - 273),
-      lat,
-      lon,
-    };
-
-    setCityWeatherList(newCityWeatherList);
   };
 
   return (
@@ -178,11 +138,7 @@ export default function HomeScreen() {
         </Button>
       </Box>
 
-      <CardList
-        list={cityWeatherList}
-        removeCity={removeCity}
-        upgradeCity={upgradeCity}
-      />
+      <CardList />
     </Box>
   );
 }
