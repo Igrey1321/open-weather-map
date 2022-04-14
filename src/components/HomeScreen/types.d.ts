@@ -12,3 +12,9 @@ export type CardListProps = {
   removeCity: (id: number) => void;
   upgradeCity: (lat: number, lon: number, id: number) => void;
 };
+
+export type LocalGeocodingType = {
+  id: number;
+  lat: number;
+  lon: number;
+};

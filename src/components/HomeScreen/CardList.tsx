@@ -25,7 +25,9 @@ export default function CardList(props: CardListProps) {
           >
             <Box className={classes.text}>
               <Typography variant="h3">City: {it.name}</Typography>
+
               <Typography variant="h4">Weather: {it.weather}</Typography>
+
               <Typography variant="h4">Temperature: {it.temp} °C</Typography>
             </Box>
 
@@ -41,6 +43,7 @@ export default function CardList(props: CardListProps) {
               >
                 Upgrade
               </Button>
+
               <Button
                 className={classes.remove}
                 variant="contained"

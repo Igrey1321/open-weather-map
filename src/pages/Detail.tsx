@@ -44,15 +44,19 @@ export default function Detail() {
       <Typography variant="h2" className={classes.text}>
         City: {weather.name}
       </Typography>
+
       <Typography variant="h3" className={classes.text}>
         Clouds: {weather.clouds} %
       </Typography>
+
       <Typography variant="h3" className={classes.text}>
         Temperature: {weather.temp} °C
       </Typography>
+
       <Typography variant="h3" className={classes.text}>
         Weather: {weather.weather}
       </Typography>
+
       <Typography variant="h3" className={classes.text}>
         Wind: {weather.wind} meter/sec
       </Typography>
