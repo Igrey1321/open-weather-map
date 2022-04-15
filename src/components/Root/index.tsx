@@ -9,7 +9,7 @@ export default function Root() {
   return (
     <Layout>
       <Routes>
-        <Route path="" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/city/:name" element={<Detail />} />
         <Route path="*" element={<NotFoundScreen />} />
       </Routes>
