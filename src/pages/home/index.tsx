@@ -1,20 +1,20 @@
 import { Box, Button, FormHelperText } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useStyles } from './index.style';
-import CardList from './CardList';
+import CardList from '../../components/CardList/CardList';
 import { LocalGeocodingType } from './types';
 import Service from '../../API/Service';
 import UseFetch from '../../hooks/useFetch';
 import { useDispatch } from 'react-redux';
 import { addCityState } from '../../store/citySlice';
 
-export default function HomeScreen() {
+export default function Home() {
   const [city, setCity] = useState('');
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  const [fetching] = UseFetch(async () => {
+  const { fetching, errorMessage } = UseFetch(async () => {
     const localGeocoding = localStorage.getItem('city');
 
     if (localGeocoding) {
@@ -41,6 +41,8 @@ export default function HomeScreen() {
             lon,
           }),
         );
+
+        setError(errorMessage);
       }
     }
   });
@@ -68,13 +70,17 @@ export default function HomeScreen() {
         const localGeocodingList = localStorage.getItem('city');
 
         if (localGeocodingList) {
-          const geocodingList = JSON.parse(localGeocodingList);
+          const geocodingList: LocalGeocodingType[] =
+            JSON.parse(localGeocodingList);
+          const element = geocodingList.find((it) => it.id === cityData.id);
 
-          geocodingList.push({
-            id: cityData.id,
-            lat: cityGeocodingData[0].lat,
-            lon: cityGeocodingData[0].lon,
-          });
+          if (!element) {
+            geocodingList.push({
+              id: cityData.id,
+              lat: cityGeocodingData[0].lat,
+              lon: cityGeocodingData[0].lon,
+            });
+          }
 
           localStorage.setItem('city', JSON.stringify(geocodingList));
         } else {

@@ -1,6 +1,6 @@
 import { Box, Button, Card, Typography } from '@mui/material';
 import React from 'react';
-import { LocalGeocodingType } from './types';
+import { LocalGeocodingType } from '../../pages/home/types';
 import { useStyles } from './CardList.style';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';

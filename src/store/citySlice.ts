@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { cityWeatherState } from '../components/HomeScreen/types';
+import { cityWeatherState } from '../pages/home/types';
 import { upgradeCityStateType } from './types';
 
 interface cityWeatherListState {
@@ -13,14 +13,19 @@ const citySlice = createSlice({
   initialState,
   reducers: {
     addCityState(state, action: PayloadAction<cityWeatherState>) {
-      state.cityWeatherList.push({
-        id: action.payload.id,
-        name: action.payload.name,
-        weather: action.payload.weather,
-        temp: action.payload.temp,
-        lat: action.payload.lat,
-        lon: action.payload.lon,
-      });
+      const element = state.cityWeatherList.find(
+        (it) => it.id === action.payload.id,
+      );
+      if (!element) {
+        state.cityWeatherList.push({
+          id: action.payload.id,
+          name: action.payload.name,
+          weather: action.payload.weather,
+          temp: action.payload.temp,
+          lat: action.payload.lat,
+          lon: action.payload.lon,
+        });
+      }
     },
     removeCityState(state, action: PayloadAction<number>) {
       state.cityWeatherList = state.cityWeatherList.filter(

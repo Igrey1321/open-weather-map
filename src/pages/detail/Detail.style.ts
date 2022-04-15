@@ -1,5 +1,5 @@
 import { makeStyles } from '@mui/styles';
-import theme from '../common/theme';
+import theme from '../../common/theme';
 
 export const useStyles = makeStyles({
   wrapper: {
@@ -12,5 +12,17 @@ export const useStyles = makeStyles({
   },
   text: {
     padding: theme.spacing(2),
+  },
+  hourlyWeather: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+    marginTop: theme.spacing(5),
+  },
+  item: {
+    backgroundColor: theme.palette.error.light,
+    minWidth: '70px',
+    lineHeight: '3',
+    textAlign: 'center',
   },
 });

@@ -1,4 +1,4 @@
-import { cityWeatherState } from '../components/HomeScreen/types';
+import { cityWeatherState } from '../pages/home/types';
 import store from './index';
 
 export type upgradeCityStateType = {
