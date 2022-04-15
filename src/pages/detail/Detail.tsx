@@ -37,8 +37,6 @@ export default function Detail() {
       .slice(0, 9)
       .map((it: { temp: number }) => Math.round(it.temp - 273));
 
-    console.log(hourlyWeather);
-
     dispatch(
       addWeatherState({
         name: responseWeather.name,
@@ -87,9 +85,13 @@ export default function Detail() {
         Wind: {weather.wind} meter/sec
       </Typography>
       <Box className={classes.hourlyWeather}>
-        {weather.hourlyWeather.map((it) => {
+        {weather.hourlyWeather.map((it, index) => {
           return (
-            <Box className={classes.item} key={it} height={getHeightItem(it)}>
+            <Box
+              className={classes.item}
+              key={index}
+              height={getHeightItem(it)}
+            >
               {getTextItem(it)}
             </Box>
           );

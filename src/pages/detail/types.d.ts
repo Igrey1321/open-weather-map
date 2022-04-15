@@ -4,4 +4,5 @@ export type WeatherState = {
   temp: number;
   weather: string;
   wind: number;
+  hourlyWeather: number[];
 };

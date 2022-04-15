@@ -12,4 +12,10 @@ export default class Service {
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}`,
     ).then((value) => value.json());
   }
+
+  static async getHourlyWeather(lat: number, lon: number) {
+    return await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=daily&appid=${this.apiKey}`,
+    ).then((value) => value.json());
+  }
 }
